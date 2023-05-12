@@ -66,7 +66,7 @@ class CostCalculator:
         return bill
 
     def calculate_total_cost(self,creature):
-        print ("ce",creature)
+
         c_rates = creature['battery_schedule']
         #penalty_1, shed_l = calculate_shedding_results(self.sheddable_loads, creature['shed_l_schedule'])
         #penalty_2, s_loads = calculate_shiftable_load_consumption(self.shiftable_loads, creature['shift_l_schedule'])
