@@ -2,9 +2,10 @@ from asyncio import subprocess
 import math
 import random
 import matplotlib.pyplot as plt
-from cost_calculator import calculate_bill,calculate_total_cost
 import gapopulation
 from Input import getInput
+
+from CostCalculator import CostCalculator
 
 # Constants
 T = 24
@@ -48,9 +49,9 @@ if __name__ == '__main__':
         M1 = len(shiftable_loads)
         M2 = len(sheddable_loads)
         random.seed(666)
-     
-        battery_idle_cost.append(calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]},solar_generation,load_consumption,soc_0))
-        xx = []
+        calculator = CostCalculator(N,soc_0,solar_generation,load_consumption,actual_solar,actual_building,electricity_tariff,shiftable_loads,sheddable_loads)
+        battery_idle_cost.append(calculator.calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}))
+        """xx = []
         yy = []
         fname = 'graph.png'
 
@@ -76,6 +77,8 @@ if __name__ == '__main__':
         optimal_cost.append(calculate_total_cost(population.get_best()[0])) # for Australia
         # if population.get_best()[1] == 0:
             #    break
-        
-print("idle vs optimal ",battery_idle_cost,optimal_cost)
-print("idle vs optimal ",sum(battery_idle_cost),sum(optimal_cost))
+        """
+#print("idle vs optimal ",battery_idle_cost,optimal_cost)
+#print("idle vs optimal ",sum(battery_idle_cost),sum(optimal_cost))
+
+print("idle vs optimal ",battery_idle_cost)
