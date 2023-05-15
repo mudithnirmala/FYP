@@ -5,6 +5,7 @@ class LoadManager:
         self.shiftable_loads = shiftable_loads
         self.load_consumption = load_consumption
         self.solar_generation = solar_generation
+        self.BATTERY_CAPACITY = 400000
 
     def add_load(self,schedule, start_time, period, consumption):
         for i in range(start_time, start_time + period):
@@ -20,8 +21,7 @@ class LoadManager:
 
     def add_battery_power(self, schedule, battery_charging_rates):
         for i in range(self.T):
-            schedule[i] += battery_charging_rates[i]
-
+            schedule[i] += (0.05*self.BATTERY_CAPACITY)*battery_charging_rates[i]
 
     def get_grid_load(self,creature):
         return [max(0, self.load_consumption[i] - self.schedule[i] - self.solar_generation[i] + self.battery_charging_rates[i]) for i in range(self.T)]

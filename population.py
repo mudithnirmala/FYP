@@ -9,16 +9,17 @@ import subprocess
 import sys
 import os
 import fileinput
-from battery import calculate_cyclelife
-from battery import battery_degradation_cost, calculate_soc_level
+from battery import battery_degradation_cost, calculate_soc_level, calculate_cyclelife
 from Input import getInput
-from loads import calculate_shiftable_load_consumption, calculate_shedding_results, calculate_total_load
+from loads import LoadManager
 
 EPS = pow(10,-30)
 min_f = pow(10,10)
+CHARGING_LEVELS = 10
+
 class GAPopulation:
     @staticmethod
-    def mutation(individual, cost_function):
+    def mutation(self,individual):
         individual = individual['battery_schedule']
         n = len(individual)
         pos = random.sample(range(n), 2) 
@@ -28,7 +29,7 @@ class GAPopulation:
         for pos1 in pos:
             for value in range(-CHARGING_LEVELS,CHARGING_LEVELS+1):
                 new_individual = individual[:pos1] + [value] + individual[pos1+1:]
-                cost = cost_function(new_individual)
+                cost = self.get_fitness(new_individual)
                 if cost < best_cost:
                     best_cost = cost
                     best_value = value
@@ -41,11 +42,17 @@ class GAPopulation:
         
     @staticmethod
     def get_fitness(self,creature):
-        return self.calculator.calculate_total_cost(creature)
+        grid_load = self.load_manager.get_grid_load(creature)
+        shed_loads = [self.sheddable_loads[i] if creature['shed_l_schedule'][i] == 1 else 0 for i in range(self.T)]
+        diesel_period = creature['diesel'][1]
+        return self.calculator.calculate_total_cost(grid_load,shed_loads,diesel_period)
 
     @staticmethod
     def crossover(self,chromosome1,chromosome2):
         min_cost = float('inf')
+        keys = chromosome1.keys()
+
+        key = keys[random.randint(len(keys)-1)]
         for i in range(1,self.T):
             cost1 = self.get_fitness(self,{key: chromosome1[key][:i] + chromosome2[key][i:] for key in chromosome1})
             if cost1   < min_cost:
@@ -82,13 +89,14 @@ class GAPopulation:
         idx = bisect_right(self.probs,val) 
         return self.creatures[idx]
 
-    def __init__(self,T,M1,M2,calculator,creatures=None):
+    def __init__(self,T,M1,M2,load_manager,calculator,creatures=None):
         self.creatures = creatures
         self.CHARGING_LEVELS=10
         self.T = T
         self.M1 = M1
         self.M2 = M2
         self.calculator = calculator
+        self.load_manager = load_manager
         
         if creatures is not None:
             self.n = len(creatures)
