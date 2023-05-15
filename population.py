@@ -43,26 +43,28 @@ class GAPopulation:
     @staticmethod
     def get_fitness(self,creature):
         grid_load = self.load_manager.get_grid_load(creature)
-        shed_loads = [self.sheddable_loads[i] if creature['shed_l_schedule'][i] == 1 else 0 for i in range(self.T)]
+        shed_loads = [i if creature['shed_l_schedule'][i] == 1 else 0 for i in range(len(creature['shed_l_schedule']))]
         diesel_period = creature['diesel'][1]
-        return self.calculator.calculate_total_cost(grid_load,shed_loads,diesel_period)
+        return self.calculator.get_total_cost(grid_load,shed_loads,diesel_period)
 
     @staticmethod
     def crossover(self,chromosome1,chromosome2):
         min_cost = float('inf')
-        keys = chromosome1.keys()
+        keys = list(chromosome1.keys())
+        #print(keys)
+        #key = keys[random.randint(0,len(keys)-1)]
+        key = keys[0]
 
-        key = keys[random.randint(len(keys)-1)]
-        for i in range(1,self.T):
-            cost1 = self.get_fitness(self,{key: chromosome1[key][:i] + chromosome2[key][i:] for key in chromosome1})
+        crossover_point=0
+        for i in range(1,len(chromosome1[key])):
+            test_creature = chromosome1
+            test_creature[key] = chromosome1[key][:i] + chromosome2[key][i:]
+            cost1 = self.get_fitness(self,test_creature)
             if cost1   < min_cost:
                 min_cost = cost1 
                 crossover_point = i
-        offspring1 = {}
-        offspring2 = {}
-        
-        for key in chromosome1:
-            offspring1[key] = chromosome1[key][:crossover_point] + chromosome2[key][crossover_point:]
+        offspring1 = chromosome1
+        offspring1[key] = chromosome1[key][:crossover_point] + chromosome2[key][crossover_point:]
         return offspring1
     
     def build_probability(self):
@@ -89,7 +91,7 @@ class GAPopulation:
         idx = bisect_right(self.probs,val) 
         return self.creatures[idx]
 
-    def __init__(self,T,M1,M2,load_manager,calculator,creatures=None):
+    def __init__(self,T,M1,M2,calculator,load_manager,creatures=None):
         self.creatures = creatures
         self.CHARGING_LEVELS=10
         self.T = T
@@ -110,6 +112,8 @@ class GAPopulation:
             creature['battery_schedule'] = np.round([max(min(random.gauss(0, self.CHARGING_LEVELS/2),self.CHARGING_LEVELS),-self.CHARGING_LEVELS) for _ in range(self.T)]).astype(int).tolist()
             creature['shift_l_schedule'] = [random.randint(shiftable_loads[i]['start'], shiftable_loads[i]['end']-shiftable_loads[i]['duration']) for i in range(self.M1)]
             creature['shed_l_schedule'] = [random.randint(0,1) for i in range(self.M2)]
+            creature['diesel'] = [random.randint(0,23), random.randint(0,10)]
+
             self.creatures.append(creature)
         self.build_probability()
 
@@ -119,8 +123,9 @@ class GAPopulation:
             c1 = self.get_stochastic()
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
+           
             n_crs.append(offs)
-        return GAPopulation(self.T,self.M1,self.M2,self.calculator,n_crs)
+        return GAPopulation(self.T,self.M1,self.M2,self.calculator,self.load_manager,n_crs)
 
     def get_best(self):
         best_val = self.fitness[0]

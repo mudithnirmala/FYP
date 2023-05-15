@@ -6,6 +6,7 @@ from population import GAPopulation
 from Input import getInput
 
 from CostCalculator import CostCalculator
+from loads import LoadManager
 
 # Constants
 T = 24
@@ -49,13 +50,13 @@ if __name__ == '__main__':
         M1 = len(shiftable_loads)
         M2 = len(sheddable_loads)
         random.seed(666)
-        calculator = CostCalculator(T,soc_0,solar_generation,load_consumption,actual_solar,actual_building,electricity_tariff,shiftable_loads,sheddable_loads)
-        battery_idle_cost.append(calculator.calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}))
-      
-
+        penalties = [0 for i in range(len(sheddable_loads))]
+        load_manager = LoadManager(T, sheddable_loads, shiftable_loads, load_consumption, solar_generation)
+        calculator = CostCalculator(T, electricity_tariff,penalties)
         
-
-        population = GAPopulation(T, M1, M2,calculator)
+        #battery_idle_cost.append(calculator.calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}))
+      
+        population = GAPopulation(T, M1, M2,calculator,load_manager)
         population.init_population(p_size)
   
         for iteration in range(n_iterations): # iteration = echo

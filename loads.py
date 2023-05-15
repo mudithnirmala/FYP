@@ -28,7 +28,8 @@ class LoadManager:
 
     def get_grid_load(self, creature):
         net_load_adjustments = [0 for i in range(self.T)] 
-        shed_loads = [self.sheddable_loads[i] if creature['shed_l_schedule'][i] == 1 else 0 for i in range(self.T)]
+      
+        shed_loads = [i if creature['shed_l_schedule'][i] == 1 else 0 for i in range(len(creature['shed_l_schedule']))]
         shift_loads = creature['shift_l_schedule']
 
         battery_charging_rates = creature["battery_schedule"]
