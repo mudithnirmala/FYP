@@ -26,8 +26,9 @@ def calculate_cyclelife(dod,c_rate): # Latter consider charging rate.
         dod = 1
     return alpha * math.log(dod) + beta
 
-def battery_degradation_cost(soc_levels):
+def battery_degradation_cost(c_rates):
 
+    soc_levels = calculate_soc_level(50,c_rates)
     capital_cost = 74621471.24
     #capital_cost = 226812.98
 

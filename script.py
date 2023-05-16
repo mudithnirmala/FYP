@@ -36,7 +36,7 @@ def plot(xx,yy,fname):
 if __name__ == '__main__':
     battery_idle_cost =[]
     optimal_cost = []
-    n_iterations =50
+    n_iterations =10
     p_size = 1000 #f  larger the population higher chance of finding local min/max, but program becomes slow
     
 
@@ -56,6 +56,8 @@ if __name__ == '__main__':
         
         #battery_idle_cost.append(calculator.calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}))
       
+        print("electricity tariff ",electricity_tariff)
+
         population = GAPopulation(T, M1, M2,calculator,load_manager)
         population.init_population(p_size)
   

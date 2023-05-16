@@ -26,9 +26,6 @@ class CostCalculator:
             p+= self.penalties[l]
 
         return p
-    
-    def battery_deg_cost():
-        return
         
     def get_total_cost(self,grid_load,shed_loads,diesel_gen_period):
         

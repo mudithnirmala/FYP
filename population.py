@@ -1,16 +1,8 @@
 import numpy as np 
-from asyncio import subprocess
 import random
 import math
 from bisect import bisect_right
-import matplotlib.pyplot as plt
-from tkinter import W 
-import subprocess
-import sys
-import os
-import fileinput
-from battery import battery_degradation_cost, calculate_soc_level, calculate_cyclelife
-from Input import getInput
+from battery import battery_degradation_cost
 from loads import LoadManager
 
 EPS = pow(10,-30)
@@ -45,7 +37,10 @@ class GAPopulation:
         grid_load = self.load_manager.get_grid_load(creature)
         shed_loads = [i if creature['shed_l_schedule'][i] == 1 else 0 for i in range(len(creature['shed_l_schedule']))]
         diesel_period = creature['diesel'][1]
-        return self.calculator.get_total_cost(grid_load,shed_loads,diesel_period)
+        
+        bd_cost = battery_degradation_cost(creature['battery_schedule'])
+        
+        return self.calculator.get_total_cost(grid_load,shed_loads,diesel_period) + bd_cost
 
     @staticmethod
     def crossover(self,chromosome1,chromosome2):
@@ -78,6 +73,7 @@ class GAPopulation:
             min_f = min(f,min_f)
             self.fitness.append(f)
             prob =  1/math.sqrt(math.sqrt(max(100,f-min_f)))
+            #prob = 100000-f
             probs.append(prob)
             prob_den += prob
         self.probs = list(map(lambda x:x/prob_den,probs))
