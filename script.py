@@ -38,9 +38,11 @@ if __name__ == '__main__':
     optimal_cost = []
     n_iterations =10
     p_size = 1000 #f  larger the population higher chance of finding local min/max, but program becomes slow
-    
+    random.seed(666)
 
     for d in range(1):
+
+
 
         print("This is day ",d)
 
@@ -49,14 +51,17 @@ if __name__ == '__main__':
         T,soc_0,solar_generation,load_consumption,actual_solar,actual_building,electricity_tariff,shiftable_loads,sheddable_loads = getInput(d)
         M1 = len(shiftable_loads)
         M2 = len(sheddable_loads)
-        random.seed(666)
+        
         penalties = [0 for i in range(len(sheddable_loads))]
         load_manager = LoadManager(T, sheddable_loads, shiftable_loads, load_consumption, solar_generation)
         calculator = CostCalculator(T, electricity_tariff,penalties)
         
         #battery_idle_cost.append(calculator.calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}))
-      
-        print("electricity tariff ",electricity_tariff)
+        creature = {'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}
+        grid_load = load_manager.get_grid_load(creature)
+        #print(grid_load)
+        #print(calculator.get_total_cost(grid_load,[],0 ))
+        #print("electricity tariff ",electricity_tariff)
 
         population = GAPopulation(T, M1, M2,calculator,load_manager)
         population.init_population(p_size)
