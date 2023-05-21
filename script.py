@@ -42,8 +42,6 @@ if __name__ == '__main__':
 
     for d in range(1):
 
-
-
         print("This is day ",d)
 
         min_f = pow(10,10)

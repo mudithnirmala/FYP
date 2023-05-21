@@ -1,11 +1,12 @@
 class LoadManager:
-    def __init__(self, T, sheddable_loads, shiftable_loads, load_consumption, solar_generation):
+    def __init__(self, T, sheddable_loads, shiftable_loads, load_consumption, solar_generation,grid_disconnection_period):
         self.T = T
         self.sheddable_loads = sheddable_loads
         self.shiftable_loads = shiftable_loads
         self.load_consumption = load_consumption
         self.solar_generation = solar_generation
         self.BATTERY_CAPACITY = 400000
+        self.grid_disconnection_period = grid_disconnection_period
 
     def add_load(self,schedule, start_time, period, consumption):
         for i in range(start_time, start_time + period):
@@ -15,17 +16,19 @@ class LoadManager:
         for i in range(start_time, start_time + period):
             schedule[i % self.T] -= consumption
 
-    def add_generation(self, schedule, start_time, period, generation):
-        for i in range(start_time, start_time + period):
-            schedule[i % self.T] += generation
-
     def add_battery_power(self, schedule, battery_charging_rates):
         for i in range(self.T):
             schedule[i] += (0.05*self.BATTERY_CAPACITY)*battery_charging_rates[i]
 
-    def get_grid_load(self,creature):
-        return [max(0, self.load_consumption[i] - self.schedule[i] - self.solar_generation[i] + self.battery_charging_rates[i]) for i in range(self.T)]
-
+    def get_diesel_units(self, creature):
+        diesel_units =0
+        grid_load = self.get_grid_load(self,creature)
+        for i in range(self.grid_disconnection_period[0], self.grid_disconnection_period[1]):
+            diesel_needed = min(grid_load[i], self.diesel_capacity)
+            diesel_units+= diesel_needed
+           
+        return diesel_units
+    
     def get_grid_load(self, creature):
         net_load_adjustments = [0 for i in range(self.T)] 
       
