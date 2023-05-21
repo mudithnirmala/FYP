@@ -145,8 +145,8 @@ class GAPopulation:
         print('Average Cost of Population  ' + str(avg_fitness)) 
         print(self.get_best())
         print("Daily - Electricity_cost of Best Creature:",self.get_fitness(self,self.get_best()[0])) 
-        print("grid_load = ",self.load_manager.get_grid_load(self.get_best()[0]))
-        print("creature is ",self.get_best()[0])
+        #print("grid_load = ",self.load_manager.get_grid_load(self.get_best()[0]))
+        #print("creature is ",self.get_best()[0])
 
     def get_avg(self):
         return (sum(self.fitness) + 1.0)/len(self.fitness)
