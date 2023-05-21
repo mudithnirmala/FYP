@@ -37,7 +37,7 @@ if __name__ == '__main__':
     battery_idle_cost =[]
     optimal_cost = []
     n_iterations =50
-    p_size = 200 #f  larger the population higher chance of finding local min/max, but program becomes slow
+    p_size = 500 #f  larger the population higher chance of finding local min/max, but program becomes slow
     random.seed(666)
 
     for d in range(1):

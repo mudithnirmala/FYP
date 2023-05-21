@@ -45,5 +45,5 @@ class LoadManager:
             self.add_load(net_load_adjustments, l["start_time"],l["period"],l["consumption"])
 
         grid_load = [max(0, self.load_consumption[i] + net_load_adjustments[i] - self.solar_generation[i]) for i in range(self.T)]
-        
+         
         return grid_load
