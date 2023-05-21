@@ -7,7 +7,6 @@ from loads import LoadManager
 
 EPS = pow(10,-30)
 min_f = pow(10,10)
-CHARGING_LEVELS = 3
 
 class GAPopulation:
     @staticmethod
@@ -45,11 +44,8 @@ class GAPopulation:
         min_cost = float('inf')
         keys = list(chromosome1.keys())
         #print(keys)
-        #key = keys[random.randint(0,len(keys)-1)]
-        key = keys[0]
-        # print(self.get_fitness(self,chromosome1))
-        # print(self.get_fitness(self,chromosome2))
-        
+        key = keys[random.randint(0,len(keys)-1)]
+        #key = keys[0]
         crossover_point=0
         for i in range(0,len(chromosome1[key])):
             test_creature = dict(chromosome1)
@@ -103,7 +99,7 @@ class GAPopulation:
             self.n = len(creatures)
             self.build_probability()
 
-    def init_population(self,size):
+    def init_population(self,size,CHARGING_LEVELS,shiftable_loads):
         self.n = size
         self.creatures = []
         for _ in range(size): 
@@ -112,7 +108,7 @@ class GAPopulation:
             creature['shift_l_schedule'] = [random.randint(shiftable_loads[i]['start'], shiftable_loads[i]['end']-shiftable_loads[i]['duration']) for i in range(self.M1)]
             creature['shed_l_schedule'] = [random.randint(0,1) for i in range(self.M2)]
            # creature['diesel'] = [random.randint(0,23), random.randint(0,10)]
-            creature['diesel'] = [0,0]
+           # creature['diesel'] = [0,0]
 
             self.creatures.append(creature)
         self.build_probability()

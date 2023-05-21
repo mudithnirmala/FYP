@@ -48,6 +48,10 @@ if __name__ == '__main__':
 
         T,soc_0,solar_generation,load_consumption,actual_solar,actual_building,electricity_tariff,shiftable_loads,sheddable_loads = getInput(d)
         grid_disconnection_period = [18,21]
+        CHARGING_LEVELS = 10
+        soc_limits = [15,85]
+        diesel_capacity = 600000
+
         M1 = len(shiftable_loads)
         M2 = len(sheddable_loads)
         
@@ -56,7 +60,7 @@ if __name__ == '__main__':
         
         load_manager = LoadManager(T, sheddable_loads, shiftable_loads, load_consumption, solar_generation, grid_disconnection_period)
         calculator = CostCalculator(T, electricity_tariff, penalties, load_manager)
-        constraint_manager = ConstraintManager(load_manager, soc_0, diesel_capacity, soc_limits=[15, 85], grid_disconnection_period=grid_disconnection_period)
+        constraint_manager = ConstraintManager(load_manager, soc_0, diesel_capacity, soc_limits, grid_disconnection_period)
 
 
 
@@ -68,7 +72,7 @@ if __name__ == '__main__':
         #print("electricity tariff ",electricity_tariff)
 
         population = GAPopulation(T, M1, M2,calculator,constraint_manager)
-        population.init_population(p_size)
+        population.init_population(p_size,CHARGING_LEVELS,shiftable_loads)
   
         for iteration in range(n_iterations): # iteration = echo
             print()
