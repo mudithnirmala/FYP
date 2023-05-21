@@ -1,45 +1,27 @@
 import csv
 def getInput(d):
+    N = 24
+    import csv
 
+    sheddable_loads = []  # List to store the dictionaries
 
-    with open('input.txt','r') as file:
-        N = int(file.readline().strip())
-        battery_state_0 = int(file.readline().strip())
-        solar_generation = list(map(int,file.readline().strip().split()))
-        load_consumption = list(map(int,file.readline().strip().split()))
-        electricity_tariff = list(map(int,file.readline().strip().split()))
+    with open('shedable_dataframe.csv', 'r') as file:
+        reader = csv.DictReader(file, delimiter='\t')  # Assuming the data is tab-separated
 
-        shiftable_loads=[]
-        sheddable_loads=[]
+        for row in reader:
+            sheddable_loads.append(dict(row))
 
-        M1 = int(file.readline().strip())
-        for i in range(M1):
-            load_data = {}
+    print(sheddable_loads)
 
-            start, end, duration, consumption = map(int, file.readline().strip().split())
-            load_data['start'] = start
-            load_data['end'] = end
-            load_data['duration'] = duration
-            load_data['consumption'] = consumption
+    shiftable_loads = []  # List to store the dictionaries
 
-            shiftable_loads.append(load_data)
+    with open('shiftable_dataframe.csv', 'r') as file:
+        reader = csv.DictReader(file, delimiter='\t')  # Assuming the data is tab-separated
 
-        M2 = int(file.readline().strip())
-        for i in range(M2):
-            load_data = {}
+        for row in reader:
+            shiftable_loads.append(dict(row))
 
-            start, end, consumption, penalty = map(int, file.readline().strip().split())
-            load_data['start'] = start
-            load_data['end'] = end
-            load_data['consumption'] = consumption
-            load_data['penalty'] = penalty
-
-            sheddable_loads.append(load_data)
-
-    solar_forecasting = []
-    actual_solar = []
-    building_forecasting = []
-    actual_building = []
+    print(shiftable_loads)
 
     with open('february_data.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -48,6 +30,12 @@ def getInput(d):
             actual_solar.append(float(row['Actual Solar']))
             building_forecasting.append(float(row['Building Forecasting']))
             actual_building.append(float(row['Actual Building']))
+
+    df = pd.read_csv('tariff_data.csv', delimiter='\t')  # Assuming the data is tab-separated
+
+    electricity_tariff = df['Rates'].tolist()
+
+    print(electricity_tariff)
 
     solar_forecasting = solar_forecasting[24*d:24*(d+1)]
     actual_solar = actual_solar[24*d:24*(d+1)]

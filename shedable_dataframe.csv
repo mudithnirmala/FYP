@@ -1,0 +1,3 @@
+load_name,start,end,penalty
+load 1,0:00,11:00,2000000
+load 2,18:00,19:00,2500000
