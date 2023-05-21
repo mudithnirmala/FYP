@@ -124,7 +124,7 @@ class GAPopulation:
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
             n_crs.append(offs)
-        return GAPopulation(self.T,self.M1,self.M2,self.calculator,self.load_manager,self.constraint_manager,n_crs)
+        return GAPopulation(self.T,self.M1,self.M2,self.calculator,self.constraint_manager,n_crs)
 
     def get_best(self):
         best_val = self.fitness[0]
