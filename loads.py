@@ -22,9 +22,9 @@ class LoadManager:
 
     def get_diesel_units(self, creature):
         diesel_units =0
-        grid_load = self.get_grid_load(self,creature)
+        grid_load = self.get_grid_load(creature)
         for i in range(self.grid_disconnection_period[0], self.grid_disconnection_period[1]):
-            diesel_needed = min(grid_load[i], self.diesel_capacity)
+            diesel_needed = grid_load[i]
             diesel_units+= diesel_needed
            
         return diesel_units

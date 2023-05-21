@@ -19,7 +19,7 @@ class CostCalculator:
 
     def get_total_cost(self,chromosome):
         grid_load = self.load_manager.get_grid_load(chromosome)
-        diesel_units = self.load_manager.get_diesel_units(self, chromosome)
+        diesel_units = self.load_manager.get_diesel_units(chromosome)
         shedded_loads = [i if chromosome['shed_l_schedule'][i] == 1 else 0 for i in range(len(chromosome['shed_l_schedule']))]
         
         return self.calculate_bill(grid_load) + self.calculate_diesel_cost(diesel_units) + self.calculate_shed_penalties(shedded_loads)
