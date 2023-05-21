@@ -36,8 +36,8 @@ def plot(xx,yy,fname):
 if __name__ == '__main__':
     battery_idle_cost =[]
     optimal_cost = []
-    n_iterations =10
-    p_size = 100 #f  larger the population higher chance of finding local min/max, but program becomes slow
+    n_iterations =50
+    p_size = 200 #f  larger the population higher chance of finding local min/max, but program becomes slow
     random.seed(666)
 
     for d in range(1):
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         #print(calculator.get_total_cost(grid_load,[],0 ))
         #print("electricity tariff ",electricity_tariff)
 
-        population = GAPopulation(T, M1, M2,calculator,load_manager)
+        population = GAPopulation(T, M1, M2,calculator,constraint_manager)
         population.init_population(p_size)
   
         for iteration in range(n_iterations): # iteration = echo
@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
             population = population.next_generation(p_size)
             if(iteration %1==0):  
-                population.print_stats()
+                population.print_stats(load_manager)
 
         # optimal_cost.append() max(0,calculate_total_cost(population.get_best()[0])) # for Sri Lanka
         # optimal_cost.append(calculate_total_cost(population.get_best()[0])) # for Australia
