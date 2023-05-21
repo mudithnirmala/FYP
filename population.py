@@ -35,7 +35,7 @@ class GAPopulation:
     @staticmethod
     def get_fitness(self,creature):
         
-        operating_cost = self.calculator.get_total_cost(self,creature)
+        operating_cost = self.calculator.get_total_cost(creature)
         bd_cost = battery_degradation_cost(creature['battery_schedule'])
         
         return operating_cost+ bd_cost
