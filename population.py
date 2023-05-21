@@ -10,26 +10,29 @@ min_f = pow(10,10)
 
 class GAPopulation:
     @staticmethod
-    def mutation(self,individual):
-        individual = individual['battery_schedule']
-        n = len(individual)
-        pos = random.sample(range(n), 2) 
-        best_cost = float('inf')
-        best_value = -1
-        
-        for pos1 in pos:
-            for value in range(-CHARGING_LEVELS,CHARGING_LEVELS+1):
-                new_individual = individual[:pos1] + [value] + individual[pos1+1:]
-                cost = self.get_fitness(new_individual)
-                if cost < best_cost:
-                    best_cost = cost
-                    best_value = value
-            
-            individual = individual[:pos1] + [best_value] + individual[pos1+1:]
-            creature = {'battery_schedule':individual,'shed_l_schedule':individual['shed_l_schedule'],'shift_l_schedule':individual['shift_l_schedule']}
-        
-        return creature
-    
+    @staticmethod
+    def mutation(self, chromosome, mutation_rate):
+        mutated_chromosome = dict(chromosome)
+        keys = list(chromosome.keys())
+
+        for key in keys:
+            gene_range = None
+
+            # Set the gene range based on the key/series
+            if key == 'battery_schedule':
+                gene_range = (-self.CHARGING_LEVELS, self.CHARGING_LEVELS)  # Example range for series1
+            elif key == 'shed_l_schedule':
+                gene_range = (0,1)  # Example range for series3
+
+            if gene_range is not None:
+                for i in range(len(mutated_chromosome[key])):
+                    if random.random() < mutation_rate:
+                        # Mutate the gene at index i
+                        mutated_gene = random.randint(gene_range[0], gene_range[1])
+                        mutated_chromosome[key][i] = mutated_gene
+
+        return mutated_chromosome
+
         
     @staticmethod
     def get_fitness(self,creature):
@@ -102,27 +105,26 @@ class GAPopulation:
     def init_population(self,size,CHARGING_LEVELS,shiftable_loads):
         self.n = size
         self.creatures = []
-        for _ in range(size): 
+        while(len(self.creatures)<size):
             creature ={}
             creature['battery_schedule'] = np.round([max(min(random.gauss(0, self.CHARGING_LEVELS/2),self.CHARGING_LEVELS),-self.CHARGING_LEVELS) for _ in range(self.T)]).astype(int).tolist()
             creature['shift_l_schedule'] = [random.randint(shiftable_loads[i]['start'], shiftable_loads[i]['end']-shiftable_loads[i]['duration']) for i in range(self.M1)]
             creature['shed_l_schedule'] = [random.randint(0,1) for i in range(self.M2)]
-           # creature['diesel'] = [random.randint(0,23), random.randint(0,10)]
-           # creature['diesel'] = [0,0]
+            if(self.constraint_manager.check_constraints(offs) == False):
+                continue
 
             self.creatures.append(creature)
         self.build_probability()
 
     def next_generation(self,size):
         n_crs = []
-        new_n=0
-        while(new_n<size):
+    
+        while(len(n_crs)<size):
             c1 = self.get_stochastic()
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
             if(self.constraint_manager.check_constraints(offs) == False):
                 continue
-            new_n+=1
             n_crs.append(offs)
         return GAPopulation(self.T,self.M1,self.M2,self.calculator,self.constraint_manager,n_crs)
 
