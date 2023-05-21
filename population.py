@@ -120,7 +120,7 @@ class GAPopulation:
     def next_generation(self,size):
         n_crs = []
         new_n=0
-        while(new_n>0):
+        while(new_n<size):
             c1 = self.get_stochastic()
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
