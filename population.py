@@ -36,11 +36,10 @@ class GAPopulation:
     def get_fitness(self,creature):
         grid_load = self.load_manager.get_grid_load(creature)
         shed_loads = [i if creature['shed_l_schedule'][i] == 1 else 0 for i in range(len(creature['shed_l_schedule']))]
-        diesel_period = creature['diesel'][1]
-        
         bd_cost = battery_degradation_cost(creature['battery_schedule'])
-        
-        return self.calculator.get_total_cost(grid_load,shed_loads,diesel_period) + bd_cost
+        constraint_cost = self.constraint_manager.calculate_penalties(creature, grid_load)
+
+        return self.calculator.get_total_cost(grid_load,shed_loads,0) + bd_cost + constraint_cost
 
     @staticmethod
     def crossover(self,chromosome1,chromosome2):
@@ -92,7 +91,7 @@ class GAPopulation:
         idx = bisect_right(self.probs,val) 
         return self.creatures[idx]
 
-    def __init__(self,T,M1,M2,calculator,load_manager,creatures=None):
+    def __init__(self,T,M1,M2,calculator,load_manager,constraint_manager,creatures=None):
         self.creatures = creatures
         self.CHARGING_LEVELS=10
         self.T = T
@@ -100,7 +99,7 @@ class GAPopulation:
         self.M2 = M2
         self.calculator = calculator
         self.load_manager = load_manager
-        
+        self.constraint_manager = constraint_manager
         if creatures is not None:
             self.n = len(creatures)
             self.build_probability()
@@ -126,7 +125,7 @@ class GAPopulation:
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
             n_crs.append(offs)
-        return GAPopulation(self.T,self.M1,self.M2,self.calculator,self.load_manager,n_crs)
+        return GAPopulation(self.T,self.M1,self.M2,self.calculator,self.load_manager,self.constraint_manager,n_crs)
 
     def get_best(self):
         best_val = self.fitness[0]
@@ -143,6 +142,8 @@ class GAPopulation:
         print('Average Cost of Population  ' + str(avg_fitness)) 
         print(self.get_best())
         print("Daily - Electricity_cost of Best Creature:",self.get_fitness(self,self.get_best()[0])) 
+        print("grid_load = ",self.load_manager.get_grid_load(self.get_best()[0]))
+        print("creature is ",self.get_best()[0])
 
     def get_avg(self):
         return (sum(self.fitness) + 1.0)/len(self.fitness)
