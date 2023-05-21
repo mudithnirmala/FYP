@@ -35,7 +35,7 @@ class GAPopulation:
     @staticmethod
     def get_fitness(self,creature):
         
-        operating_cost = self.cost_calculator.get_total_cost(self,creature)
+        operating_cost = self.calculator.get_total_cost(self,creature)
         bd_cost = battery_degradation_cost(creature['battery_schedule'])
         
         return operating_cost+ bd_cost
@@ -119,10 +119,14 @@ class GAPopulation:
 
     def next_generation(self,size):
         n_crs = []
-        for _ in range(size):
+        new_n=0
+        while(new_n>0):
             c1 = self.get_stochastic()
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
+            if(self.constraint_manager.check_constraints(offs) == False):
+                continue
+            new_n+=1
             n_crs.append(offs)
         return GAPopulation(self.T,self.M1,self.M2,self.calculator,self.constraint_manager,n_crs)
 
