@@ -5,6 +5,7 @@ class CostCalculator:
         self.T = T
         self.diesel_unit_cost = diesel_unit_cost
         self.sheddable_penalties = sheddable_penalties
+        self.load_manager = load_manager
 
     def calculate_bill(self, grid_load):
         bill = sum(rate * load / 1000 for rate, load in zip(self.electricity_tariff, grid_load))
