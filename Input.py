@@ -36,11 +36,13 @@ def getInput(d):
     electricity_tariff = df['Rates'].tolist()
 
     print(electricity_tariff)
+    
 
     solar_forecasting = solar_forecasting[24*d:24*(d+1)]
     actual_solar = actual_solar[24*d:24*(d+1)]
     building_forecasting = building_forecasting[24*d:24*(d+1)]
     actual_building = actual_building[24*d:24*(d+1)]
+
 
     #return N,battery_state_0,solar_generation,load_consumption,electricity_tariff,shiftable_loads,sheddable_loads
     return N,battery_state_0,solar_forecasting,building_forecasting,actual_solar,actual_building, electricity_tariff,shiftable_loads,sheddable_loads
