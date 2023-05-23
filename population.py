@@ -110,7 +110,7 @@ class GAPopulation:
             creature['battery_schedule'] = np.round([max(min(random.gauss(0, self.CHARGING_LEVELS/2),self.CHARGING_LEVELS),-self.CHARGING_LEVELS) for _ in range(self.T)]).astype(int).tolist()
             creature['shift_l_schedule'] = [random.randint(shiftable_loads[i]['start'], shiftable_loads[i]['end']-shiftable_loads[i]['duration']) for i in range(self.M1)]
             creature['shed_l_schedule'] = [random.randint(0,1) for i in range(self.M2)]
-            if(self.constraint_manager.check_constraints(offs) == False):
+            if(self.constraint_manager.check_constraints(creature) == False):
                 continue
 
             self.creatures.append(creature)

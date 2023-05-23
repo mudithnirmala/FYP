@@ -39,10 +39,12 @@ class LoadManager:
         self.add_battery_power(net_load_adjustments, battery_charging_rates)
 
         for l in shed_loads:
-            self.remove_load(net_load_adjustments, l["start_time"],l["period"],l["consumption"])
+            sl  = self.sheddable_loads[l]
+            self.remove_load(net_load_adjustments, sl["start"],sl["period"],sl["consumption"])   
 
         for l in shift_loads:
-            self.add_load(net_load_adjustments, l["start_time"],l["period"],l["consumption"])
+            sl  = self.shiftable_loads[l]
+            self.add_load(net_load_adjustments, sl["start"],sl["period"],sl["consumption"])
 
         grid_load = [max(0, self.load_consumption[i] + net_load_adjustments[i] - self.solar_generation[i]) for i in range(self.T)]
          

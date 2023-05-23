@@ -55,7 +55,7 @@ if __name__ == '__main__':
         M1 = len(shiftable_loads)
         M2 = len(sheddable_loads)
         
-        penalties = [sheddable_loads[i]['consumption'] for i in range(len(sheddable_loads))]
+        penalties = [sheddable_loads[i]['penalty'] for i in range(len(sheddable_loads))]
         
         
         load_manager = LoadManager(T, sheddable_loads, shiftable_loads, load_consumption, solar_generation, grid_disconnection_period)
