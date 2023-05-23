@@ -1,4 +1,7 @@
 import csv
+import pandas as pd
+battery_state_0 = 50
+
 def getInput(d):
     N = 24
     import csv
@@ -6,22 +9,33 @@ def getInput(d):
     sheddable_loads = []  # List to store the dictionaries
 
     with open('shedable_dataframe.csv', 'r') as file:
-        reader = csv.DictReader(file, delimiter='\t')  # Assuming the data is tab-separated
+        reader = csv.DictReader(file, delimiter=',')  # Assuming the data is tab-separated
 
         for row in reader:
-            sheddable_loads.append(dict(row))
+            item = dict(row)
 
+            for key, value in item.items():
+                # Convert the value to an integer if it's a string of digits
+                if value.isdigit():
+                    item[key] = int(value)
+            sheddable_loads.append(item)# Iterate over each dictionary in the data list
     print(sheddable_loads)
 
     shiftable_loads = []  # List to store the dictionaries
 
     with open('shiftable_dataframe.csv', 'r') as file:
-        reader = csv.DictReader(file, delimiter='\t')  # Assuming the data is tab-separated
+        reader = csv.DictReader(file, delimiter=',')  # Assuming the data is tab-separated
 
         for row in reader:
             shiftable_loads.append(dict(row))
 
     print(shiftable_loads)
+
+    # Initialize the lists
+    solar_forecasting = []
+    actual_solar = []
+    building_forecasting = []
+    actual_building = []
 
     with open('february_data.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -31,7 +45,7 @@ def getInput(d):
             building_forecasting.append(float(row['Building Forecasting']))
             actual_building.append(float(row['Actual Building']))
 
-    df = pd.read_csv('tariff_data.csv', delimiter='\t')  # Assuming the data is tab-separated
+    df = pd.read_csv('tariff_data.csv', delimiter=',')  # Assuming the data is tab-separated
 
     electricity_tariff = df['Rates'].tolist()
 
