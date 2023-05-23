@@ -31,7 +31,7 @@ class LoadManager:
     
     def get_grid_load(self, creature):
         net_load_adjustments = [0 for i in range(self.T)] 
-      
+        
         shed_loads = [i if creature['shed_l_schedule'][i] == 1 else 0 for i in range(len(creature['shed_l_schedule']))]
         shift_loads = creature['shift_l_schedule']
 
@@ -42,7 +42,9 @@ class LoadManager:
             sl  = self.sheddable_loads[l]
             self.remove_load(net_load_adjustments, sl["start"],sl["end"]-sl["start"],sl["consumption"])   
 
-        for l in shift_loads:
+        for l,isShed in enumerate(shift_loads):
+            if(not(isShed)): continue 
+
             sl  = self.shiftable_loads[l]
             self.add_load(net_load_adjustments, sl["start"],sl["duration"],sl["consumption"])
 

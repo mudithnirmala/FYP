@@ -15,7 +15,7 @@ class CostCalculator:
         return diesel_units*self.diesel_unit_cost
 
     def calculate_shed_penalties(self,shedded_loads):
-        return sum(self.sheddable_penalties(p_i) for i, p_i in enumerate(shedded_loads))
+        return sum(self.sheddable_penalties[p_i] for i, p_i in enumerate(shedded_loads))
 
     def get_total_cost(self,chromosome):
         grid_load = self.load_manager.get_grid_load(chromosome)

@@ -19,7 +19,6 @@ def getInput(d):
                 if value.isdigit():
                     item[key] = int(value)
             sheddable_loads.append(item)# Iterate over each dictionary in the data list
-    print(sheddable_loads)
 
     shiftable_loads = []  # List to store the dictionaries
 
@@ -34,8 +33,6 @@ def getInput(d):
                 if value.isdigit():
                     item[key] = int(value)
             shiftable_loads.append(item)# Iterate over each dictionary in the data list
-    
-    print(shiftable_loads)
 
     # Initialize the lists
     solar_forecasting = []
@@ -54,9 +51,6 @@ def getInput(d):
     df = pd.read_csv('tariff_data.csv', delimiter=',')  # Assuming the data is tab-separated
 
     electricity_tariff = df['Rates'].tolist()
-
-    print(electricity_tariff)
-    
 
     solar_forecasting = solar_forecasting[24*d:24*(d+1)]
     actual_solar = actual_solar[24*d:24*(d+1)]
