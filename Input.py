@@ -27,8 +27,14 @@ def getInput(d):
         reader = csv.DictReader(file, delimiter=',')  # Assuming the data is tab-separated
 
         for row in reader:
-            shiftable_loads.append(dict(row))
+            item = dict(row)
 
+            for key, value in item.items():
+                # Convert the value to an integer if it's a string of digits
+                if value.isdigit():
+                    item[key] = int(value)
+            shiftable_loads.append(item)# Iterate over each dictionary in the data list
+    
     print(shiftable_loads)
 
     # Initialize the lists
