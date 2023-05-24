@@ -1,3 +1,4 @@
 load_name,start,end,duration,consumption
-load 1,11,18,2,200000
-load 2,13,17,2,400000
+load 1,11.0,18.0,2.0,200000.0
+load 2,13.0,17.0,2.0,400000.0
+load 3,10.0,20.0,2.0,19999.96

@@ -33,7 +33,7 @@ def plot(xx,yy,fname):
     plt.savefig(fname)
 
 
-if __name__ == '__main__':
+def run_optimization():
     battery_idle_cost =[]
     optimal_cost = []
     n_iterations =50
@@ -87,4 +87,4 @@ if __name__ == '__main__':
 
     
 
-print("idle vs optimal ",battery_idle_cost)
+#print("idle vs optimal ",battery_idle_cost)
