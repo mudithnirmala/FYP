@@ -7,6 +7,7 @@ from Input import getInput
 from constraint import ConstraintManager
 from CostCalculator import CostCalculator
 from loads import LoadManager
+from dp import find_optimal_battery_dispatch
 
 # Constants
 T = 24
@@ -62,6 +63,7 @@ if __name__ == '__main__':
         calculator = CostCalculator(T, electricity_tariff, penalties, load_manager)
         constraint_manager = ConstraintManager(load_manager, soc_0, diesel_capacity, soc_limits, grid_disconnection_period)
 
+        print("dp solution ",find_optimal_battery_dispatch(T,calculator))
         #battery_idle_cost.append(calculator.calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}))
         creature = {'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}
         grid_load = load_manager.get_grid_load(creature)
