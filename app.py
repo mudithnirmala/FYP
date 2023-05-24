@@ -117,7 +117,7 @@ def app_layout():
         shiftable_loads, sheddable_loads = [], []
 
         battery_schedule_opt = run_optimization()
-        print("print",battery_schedule_opt)
+        #print("print",battery_schedule_opt)
         show_output(battery_schedule_opt["battery_schedule"])
 
 
@@ -136,6 +136,7 @@ def plot_tariff(df):
     st.plotly_chart(fig)
 
 
+
 def plot_dispatch(schedule):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=list(range(len(schedule))), y=schedule, mode='lines', name='Battery Dispatch Schedule'))
@@ -143,8 +144,22 @@ def plot_dispatch(schedule):
     st.plotly_chart(fig)
 
 
+#battery_soc = [sum(c_rates[:i+1])+self.soc_0 for i in range(len(c_rates))]
+
 def show_output(schedule):
-    st.dataframe(pd.DataFrame({'Hour of Day': range(len(schedule)), 'Battery Dispatch Schedule': schedule}))
+    c_rates = [rate*5 for rate in schedule]  # Convert power from kW to kWh
+    soc_0 = st.sidebar.number_input("Initial State of Charge (%)", value=50, min_value=0, max_value=100)   # Initial SOC as a fraction
+    battery_soc = [sum(c_rates[:i+1]) + soc_0 for i in range(len(c_rates))]
+    soc_df = pd.DataFrame({'Hour of Day': range(len(schedule)), 'Battery SOC': battery_soc})
+    print("babbajdsf",battery_soc)
+
+    # Plot SOC level vs. hour of the day
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=soc_df['Hour of Day'], y=soc_df['Battery SOC'], mode='lines', name='Battery SOC'))
+    fig.update_layout(title='Battery State of Charge (SOC) vs. Hour of the Day', xaxis_title='Hour of the Day', yaxis_title='SOC')
+    st.plotly_chart(fig)
+
+    # Plot battery dispatch schedule
     plot_dispatch(schedule)
 
 

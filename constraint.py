@@ -10,11 +10,12 @@ class ConstraintManager:
     def check_constraints(self, chromosome):
         c_rates = chromosome["battery_schedule"]
 
-        battery_soc = [sum(c_rates[:i+1])+self.soc_0 for i in range(len(c_rates))]
+        battery_soc = [5*sum(c_rates[:i+1])+self.soc_0 for i in range(len(c_rates))]
 
         if any(soc_i < self.soc_limits[0] or soc_i > self.soc_limits[1] for soc_i in battery_soc):
             return False
-
+        if(battery_soc[-1]<self.soc_0):
+            return False
         grid_load = self.load_manager.get_grid_load(chromosome)
 
         for i in range(self.grid_disconnection_period[0], self.grid_disconnection_period[1]):

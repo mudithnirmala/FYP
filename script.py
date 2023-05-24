@@ -36,7 +36,7 @@ def plot(xx,yy,fname):
 def run_optimization():
     battery_idle_cost =[]
     optimal_cost = []
-    n_iterations = 50
+    n_iterations = 5
     p_size = 500 #f  larger the population higher chance of finding local min/max, but program becomes slow
     random.seed(666)
 
