@@ -1,3 +1,12 @@
+from battery import battery_degradation_cost
+
+def get_fitness(calculator,creature):
+    
+    operating_cost = calculator.get_total_cost(creature)
+    bd_cost = battery_degradation_cost(creature['battery_schedule'])
+    
+    return operating_cost+ bd_cost
+
 def find_optimal_battery_dispatch(T, calculator):
     soc_levels = 20
     charging_levels = 10  # Default value for charging levels
@@ -16,6 +25,7 @@ def find_optimal_battery_dispatch(T, calculator):
         for soc_level in range(soc_levels + 1):
             # Iterate over possible charging levels
             for c_level in range(-charging_levels, charging_levels + 1):
+                if(-1*c_level>soc_level): continue
                 new_soc = soc_level - c_level
                 new_soc = max(0, min(new_soc, soc_levels))
                 print(dispatch_schedule[t - 1][new_soc])
@@ -25,9 +35,8 @@ def find_optimal_battery_dispatch(T, calculator):
                     'shed_l_schedule': [],  # Replace with your actual shed load schedule
                     'shift_l_schedule': [],  # Replace with your actual shift load schedule
                 }
-                print(creature['battery_schedule'])
                 creature['battery_schedule'][t] = c_level
-                cost = calculator.get_fitness(creature)
+                cost = get_fitness(calculator,creature)
 
                 if cost < dp[t][soc_level]:
                     dp[t][soc_level] = cost

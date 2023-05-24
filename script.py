@@ -38,7 +38,7 @@ if __name__ == '__main__':
     battery_idle_cost =[]
     optimal_cost = []
     n_iterations =50
-    p_size = 500 #f  larger the population higher chance of finding local min/max, but program becomes slow
+    p_size = 1000 #f  larger the population higher chance of finding local min/max, but program becomes slow
     random.seed(666)
 
     for d in range(1):
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         calculator = CostCalculator(T, electricity_tariff, penalties, load_manager)
         constraint_manager = ConstraintManager(load_manager, soc_0, diesel_capacity, soc_limits, grid_disconnection_period)
 
-        print("dp solution ",find_optimal_battery_dispatch(T,calculator))
+        #print("dp solution ",find_optimal_battery_dispatch(T,calculator))
         #battery_idle_cost.append(calculator.calculate_total_cost({'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}))
         creature = {'battery_schedule':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],'shed_l_schedule':[],'shift_l_schedule':[]}
         grid_load = load_manager.get_grid_load(creature)
@@ -80,13 +80,12 @@ if __name__ == '__main__':
             print()
             
 
-            population = population.next_generation(p_size)
+            population = population.next_generation(iteration,p_size)
             if(iteration %1==0):  
                 population.print_stats(load_manager)
 
         # optimal_cost.append() max(0,calculate_total_cost(population.get_best()[0])) # for Sri Lanka
         # optimal_cost.append(calculate_total_cost(population.get_best()[0])) # for Australia
 
-    
 
 print("idle vs optimal ",battery_idle_cost)
