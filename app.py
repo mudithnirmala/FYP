@@ -46,10 +46,10 @@ def app_layout():
     with st.sidebar.form("Shiftable Load Form"):
         st.sidebar.header('Shiftable Load')
         load_name_shift = st.sidebar.text_input('Enter the load name', key="shift_load_name")
-        start_time_shift = st.sidebar.number_input('Enter the Starting Time', format="%g", key="shift_start_time")
-        end_time_shift = st.sidebar.number_input('Enter the Ending Time', format="%g", key="shift_end_time")
-        duration_shift = st.sidebar.number_input('Enter the Time duration', format="%g", key="shift_duration")
-        power_consumption_shift = st.sidebar.number_input('Enter the Power Consumption', format="%g", key="shift_power_consumption")
+        start_time_shift = st.sidebar.number_input('Enter the Starting Time', format="%i", key="shift_start_time")
+        end_time_shift = st.sidebar.number_input('Enter the Ending Time', format="%i", key="shift_end_time")
+        duration_shift = st.sidebar.number_input('Enter the Time duration', format="%i", key="shift_duration")
+        power_consumption_shift = st.sidebar.number_input('Enter the Power Consumption', format="%i", key="shift_power_consumption")
 
         add_shift = st.form_submit_button('Add to Shiftable')
         delete_shift = st.form_submit_button('Delete Data from Shiftable')
@@ -57,16 +57,16 @@ def app_layout():
     with st.sidebar.form("Sheddable Load Form"):
         st.sidebar.header('Sheddable Load')
         load_name_shed = st.sidebar.text_input('Enter the load name', key="shed_load_name")
-        start_time_shed = st.sidebar.number_input('Enter the Starting Time', format="%g", key="shed_start_time")
-        end_time_shed = st.sidebar.number_input('Enter the Ending Time', format="%g", key="shed_end_time")
-        penalty_shed = st.sidebar.number_input('Enter the Penalty', format="%g", key="shed_penalty")
-        power_consumption_shed = st.sidebar.number_input('Enter the Power Consumption', format="%g", key="shed_power_consumption")
+        start_time_shed = st.sidebar.number_input('Enter the Starting Time', format="%i", key="shed_start_time")
+        end_time_shed = st.sidebar.number_input('Enter the Ending Time', format="%i", key="shed_end_time")
+        penalty_shed = st.sidebar.number_input('Enter the Penalty', format="%i", key="shed_penalty")
+        power_consumption_shed = st.sidebar.number_input('Enter the Power Consumption', format="%i", key="shed_power_consumption")
 
         add_shed = st.form_submit_button('Add to Sheddable')
         delete_shed = st.form_submit_button('Delete Data from Sheddable')
 
     if add_shift:
-        df_shift.loc[len(df_shift)] = [load_name_shift, start_time_shift, end_time_shift, duration_shift, power_consumption_shift]
+        df_shift.loc[len(df_shift)] = [load_name_shift, int(start_time_shift), int(end_time_shift), int(duration_shift), int(power_consumption_shift)]
         df_shift.to_csv(csv_file_shift, index=False)
 
     if delete_shift:
@@ -74,7 +74,7 @@ def app_layout():
         df_shift.to_csv(csv_file_shift, index=False)
 
     if add_shed:
-        df_shed.loc[len(df_shed)] = [load_name_shed, start_time_shed, end_time_shed, penalty_shed, power_consumption_shed]
+        df_shed.loc[len(df_shed)] = [load_name_shed, int(start_time_shed), int(end_time_shed), int(penalty_shed), int(power_consumption_shed)]
         df_shed.to_csv(csv_file_shed, index=False)
 
     if delete_shed:
@@ -117,8 +117,8 @@ def app_layout():
         shiftable_loads, sheddable_loads = [], []
 
         battery_schedule_opt = run_optimization()
-
-        show_output(battery_schedule_opt[0]["battery_schedule"])
+        print("print",battery_schedule_opt)
+        show_output(battery_schedule_opt["battery_schedule"])
 
 
 def plot_solar(df):

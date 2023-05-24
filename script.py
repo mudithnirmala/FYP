@@ -36,7 +36,7 @@ def plot(xx,yy,fname):
 def run_optimization():
     battery_idle_cost =[]
     optimal_cost = []
-    n_iterations =50
+    n_iterations = 50
     p_size = 500 #f  larger the population higher chance of finding local min/max, but program becomes slow
     random.seed(666)
 
@@ -85,6 +85,6 @@ def run_optimization():
         # optimal_cost.append() max(0,calculate_total_cost(population.get_best()[0])) # for Sri Lanka
         # optimal_cost.append(calculate_total_cost(population.get_best()[0])) # for Australia
 
-    
+    return population.get_best()[0]
 
 #print("idle vs optimal ",battery_idle_cost)
