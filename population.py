@@ -10,7 +10,6 @@ min_f = pow(10,10)
 
 class GAPopulation:
     @staticmethod
-    @staticmethod
     def mutation(self, chromosome, mutation_rate):
         mutated_chromosome = dict(chromosome)
         keys = list(chromosome.keys())
@@ -25,7 +24,8 @@ class GAPopulation:
                 gene_range = (0,1)  # Example range for series3
 
             if gene_range is not None:
-                for i in range(len(mutated_chromosome[key])):
+                #for i in range(len(mutated_chromosome[key])):
+                    i = random.randint(0,len(mutated_chromosome[key])-1)
                     if random.random() < mutation_rate:
                         # Mutate the gene at index i
                         mutated_gene = random.randint(gene_range[0], gene_range[1])
@@ -53,6 +53,8 @@ class GAPopulation:
         for i in range(0,len(chromosome1[key])):
             test_creature = dict(chromosome1)
             test_creature[key] = chromosome1[key][:i] + chromosome2[key][i:]
+            if(self.constraint_manager.check_constraints(test_creature) == False and random.random()>0.05):
+                continue
             cost1 = self.get_fitness(self,test_creature)
             if cost1   < min_cost:
                 min_cost = cost1 
@@ -72,7 +74,8 @@ class GAPopulation:
             f = GAPopulation.get_fitness(self,c)
             min_f = min(f,min_f)
             self.fitness.append(f)
-            prob =  1/math.sqrt(math.sqrt(max(100,f-min_f)))
+            #prob =  1/math.sqrt(math.sqrt(max(100,f-min_f)))
+            prob =  1/math.pow(max(100,f-min_f),3)
             #prob = 100000-f
             #print("f",f,prob)    
             probs.append(prob)
@@ -112,17 +115,22 @@ class GAPopulation:
             creature['shed_l_schedule'] = [random.randint(0,1) for i in range(self.M2)]
             if(self.constraint_manager.check_constraints(creature) == False):
                 continue
-
             self.creatures.append(creature)
         self.build_probability()
 
-    def next_generation(self,size):
+    def next_generation(self,generation,size):
         n_crs = []
     
+        n_crs.append(self.get_best()[0])
+        i =0
         while(len(n_crs)<size):
+            i+=1
             c1 = self.get_stochastic()
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
+            
+            if(generation>5 and i/len(n_crs)<20):
+                offs = GAPopulation.mutation(self, offs, min(0.001*generation,0.05))
             if(self.constraint_manager.check_constraints(offs) == False):
                 continue
             n_crs.append(offs)
