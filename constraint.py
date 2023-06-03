@@ -12,7 +12,7 @@ class ConstraintManager:
 
         battery_soc = [5*sum(c_rates[:i+1])+self.soc_0 for i in range(len(c_rates))]
 
-        if(self.soc_limits[-1]<self.soc_0):
+        if(battery_soc[-1]<self.soc_0):
             return False
 
         if any(soc_i < self.soc_limits[0] or soc_i > self.soc_limits[1] for soc_i in battery_soc):

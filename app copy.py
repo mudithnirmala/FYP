@@ -118,10 +118,9 @@ def app_layout():
         solar_forecasting, actual_solar, building_forecasting, actual_building, electricity_tariff = [], [], [], [], []
         shiftable_loads, sheddable_loads = [], []
 
-        schedule_opt,grid_load,idle_cost, best_cost = run_optimization()
-        show_output(schedule_opt, df_shift, df_shed,grid_load)
-        st.write(f"Optimal Scheduling Cost: {best_cost}")
-        st.write(f"Idle Cost: {idle_cost}")
+        battery_schedule_opt = run_optimization()
+        #print("print",battery_schedule_opt)
+        show_output(battery_schedule_opt["battery_schedule"])
 
 
 def plot_solar(df):
@@ -139,18 +138,22 @@ def plot_tariff(df):
     st.plotly_chart(fig)
 
 
-def plot_graph(schedule,title,yaxis_title):
+
+def plot_dispatch(schedule):
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=list(range(len(schedule))), y=schedule, mode='lines', name=title))
-    fig.update_layout(title=title, xaxis_title='Hour of the Day', yaxis_title=yaxis_title)
+    fig.add_trace(go.Scatter(x=list(range(len(schedule))), y=schedule, mode='lines', name='Battery Dispatch Schedule'))
+    fig.update_layout(title='Battery Dispatch Schedule', xaxis_title='Hour of the Day', yaxis_title='Battery Power (kW)')
     st.plotly_chart(fig)
 
 
-def show_output(schedule, df_shift, df_shed,grid_load):
-    c_rates = [rate*5 for rate in schedule["battery_schedule"]]  # Convert power from kW to kWh
+#battery_soc = [sum(c_rates[:i+1])+self.soc_0 for i in range(len(c_rates))]
+
+def show_output(schedule):
+    c_rates = [rate*5 for rate in schedule]  # Convert power from kW to kWh
     soc_0 = st.sidebar.number_input("Initial State of Charge (%)", value=50, min_value=0, max_value=100)   # Initial SOC as a fraction
     battery_soc = [sum(c_rates[:i+1]) + soc_0 for i in range(len(c_rates))]
-    soc_df = pd.DataFrame({'Hour of Day': range(len(schedule["battery_schedule"])), 'Battery SOC': battery_soc})
+    soc_df = pd.DataFrame({'Hour of Day': range(len(schedule)), 'Battery SOC': battery_soc})
+    print("babbajdsf",battery_soc)
 
     # Plot SOC level vs. hour of the day
     fig = go.Figure()
@@ -159,30 +162,8 @@ def show_output(schedule, df_shift, df_shed,grid_load):
     st.plotly_chart(fig)
 
     # Plot battery dispatch schedule
-    plot_graph(schedule["battery_schedule"],'Battery Dispatch Schedule','Battery Power (kW)')
-    plot_graph(grid_load,'Grid_Load_Consumption + Diesel Generation','Power Input')
+    plot_dispatch(schedule)
 
-
-
-    # Add columns to df_shift
-        # Add columns to df_shift
-    if 'shift_l_schedule' in schedule:
-        df_shift['Shift Load Schedule'] = schedule['shift_l_schedule']
-    else:
-        print("fdkfdsjakdsf")
-        df_shift['Shift Load Schedule'] = None
-
-    # Add columns to df_shed
-    if 'shed_l_schedule' in schedule:
-        df_shed['Shed Load Schedule'] = schedule['shed_l_schedule']
-    else:
-        df_shed['Shed Load Schedule'] = None
-
-    st.header('Shiftable Loads')
-    st.table(df_shift[['load_name', 'Shift Load Schedule']])
-
-    st.header('Sheddable Loads')
-    st.table(df_shed[['load_name', 'Shed Load Schedule']])
 
 def main():
     st.title("Optimal Schedule")

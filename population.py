@@ -129,8 +129,8 @@ class GAPopulation:
             c2 = self.get_stochastic()
             offs = GAPopulation.crossover(self,c1,c2)
             
-            if(generation>5 and i/len(n_crs)<20):
-                offs = GAPopulation.mutation(self, offs, min(0.001*generation,0.05))
+            if(generation>5 and i/len(n_crs)<5):
+                offs = GAPopulation.mutation(self, offs, min(0.005*generation,0.01))
             if(self.constraint_manager.check_constraints(offs) == False):
                 continue
             n_crs.append(offs)
