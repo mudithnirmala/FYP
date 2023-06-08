@@ -1,0 +1,19 @@
+load_name,start,end,penalty,consumption
+1. EE M.sc Lecture Room,8,10,100,330
+2. EE Power system Laboratory,10,12,200,1110
+3. EE Computer Laboratory,8,12,400,990
+4. EE Power Electronic Laboratory,13,15,200,480
+5. EE Seminar Room,15,17,160,660
+6. EE Robotic Laboratory,10,12,200,300
+7. Network Engineering Lab,10,12,300,150
+8. Level II Lab,13,15,400,150
+9. Final Year Room,8,12,400,300
+10. Final Year Research Lab,13,15,200,300
+11. Level 01 lab,13,15,300,300
+12. ICE lab,15,18,200,150
+13. CSE seminar room,16,20,200,300
+14. CODGEN lab,8,14,100,150
+15. Tutorial room 2,12,15,300,300
+16. CSE conference room,16,18,100,150
+17. Electrical Installation Lab(EE),11,13,150,720
+18. Instructor room(CSE),15,17,150,150

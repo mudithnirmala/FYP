@@ -1,0 +1,5 @@
+load_name,start,end,duration,consumption
+Tutorial,10,14,2,2000
+Machines Practical,13,17,2,3000
+HV Practical,14,16,1,2000
+EV Charging,8,16,2,30000
